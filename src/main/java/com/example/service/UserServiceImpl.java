@@ -2,8 +2,10 @@ package com.example.service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,10 @@ import com.example.repository.UserRepository;
 @Service("userService")
 public class UserServiceImpl implements UserService{
 
+	@Qualifier("userRepository")
 	@Autowired
 	private UserRepository userRepository;
+	@Qualifier("roleRepository")
 	@Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -34,6 +38,10 @@ public class UserServiceImpl implements UserService{
         Role userRole = roleRepository.findByRole("ADMIN");
         user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
 		userRepository.save(user);
+	}
+
+	public List<User> findAllUsers() {
+		return userRepository.findAll();
 	}
 
 }

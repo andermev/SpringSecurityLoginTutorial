@@ -1,20 +1,23 @@
 package com.example.controller;
 
-import javax.validation.Valid;
-
+import com.example.model.User;
+import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.model.User;
-import com.example.service.UserService;
+import javax.validation.Valid;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class LoginController {
 	
 	@Autowired
@@ -67,6 +70,15 @@ public class LoginController {
 		modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
+	}
+
+	@RequestMapping(value="/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<User>> getUsers(){
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		List<User> users = userService.findAllUsers();
+		return ResponseEntity.ok()
+				.body(users);
 	}
 	
 
